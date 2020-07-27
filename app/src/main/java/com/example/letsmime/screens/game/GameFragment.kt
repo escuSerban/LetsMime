@@ -61,9 +61,32 @@ class GameFragment : Fragment() {
         viewModel.eventBuzz.observe(viewLifecycleOwner, Observer { buzzType ->
             if (buzzType != GameViewModel.BuzzType.NO_BUZZ) {
                 buzz(buzzType.pattern)
+                // Changing the panic time to be red coloured
+                binding.timerText.setTextColor(
+                    resources.getColor(
+                        R.color.colorAccent,
+                        context?.theme
+                    )
+                )
                 viewModel.onBuzzComplete()
+                // Returning to the initial color after timer restarts
+                if (buzzType == GameViewModel.BuzzType.TIMESUP) binding.timerText.setTextColor(
+                    resources.getColor(R.color.grey_text_color, context?.theme)
+                )
             }
         })
+
+        binding.correctButton.setOnClickListener {
+            viewModel.onCorrect()
+            pause_button.visibility = View.VISIBLE
+            play_button.visibility = View.GONE
+        }
+
+        binding.skipButton.setOnClickListener {
+            viewModel.onSkip()
+            pause_button.visibility = View.VISIBLE
+            play_button.visibility = View.GONE
+        }
 
         binding.pauseButton.setOnClickListener {
             viewModel.onPause()
